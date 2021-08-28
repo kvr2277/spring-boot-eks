@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-demo
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eksdemo
+  template:
+    metadata:
+      labels:
+        app: eksdemo
+    spec:
+      containers:
+        - name: back-end
+          image: 777258879183.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+          ports:
+            - containerPort: 8080

@@ -70,3 +70,27 @@ eksctl delete cluster --region=us-east-1 --name=my-cluster
 ```
 
 
+5. Deploying image to EKS (https://towardsdatascience.com/kubernetes-application-deployment-with-aws-eks-and-ecr-4600e11b2d3c)
+
+kubectl apply -f eks-deployment.yaml
+kubectl get deployments
+kubectl apply -f eks-service.yaml
+kubectl get pods -o wide
+kubectl get nodes -o wide
+
+Get the external IPs
+18.204.56.240 
+18.206.95.241
+
+Edit worker node security group to allow inbound traffic for port 31479 from source anywhere - 0.0.0.0/0
+eksctl-my-cluster-nodegroup-ng-1-workers-SG-JSDGZE4AAAA
+
+http://18.206.95.241:31479/name
+http://18.204.56.240:31479/name
+
+
+delete cluster again
+
+```
+eksctl delete cluster --region=us-east-1 --name=my-cluster
+```
