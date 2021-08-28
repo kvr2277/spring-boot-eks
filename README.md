@@ -1,2 +1,13 @@
 # eks-spring-service
-Spring Boot based service in EKS
+Simple Spring Boot rest services on EKS
+
+# Steps
+
+Check basic java build
+
+```
+./mvnw install
+java -jar target/*.jar
+curl localhost:8080/name
+```
+
