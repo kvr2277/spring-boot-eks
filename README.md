@@ -39,3 +39,34 @@ Push image
 docker push 777258879183.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
 ```
 
+4. Now working with EKS
+
+a)
+Set up eksctl (source: https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
+
+```
+brew tap weaveworks/tap
+brew install weaveworks/tap/eksctl
+eksctl version
+```
+
+b) Create cluster - takes ~30 minutes
+
+```
+eksctl create cluster -f cluster.yaml
+```
+
+Once created, test by executing below commands
+
+```
+kubectl get svc
+kubectl get nodes -o wide
+kubectl get pods --all-namespaces -o wide
+```
+
+c) Once basic cluster creation testing is done, delete the resources
+```
+eksctl delete cluster --region=us-east-1 --name=my-cluster
+```
+
+
