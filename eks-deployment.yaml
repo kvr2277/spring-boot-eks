@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-demo
+  name: demo-deployment
   namespace: default
 spec:
   replicas: 2
@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: back-end
-          image: 777258879183.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+          image: 777258879182.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
           ports:
             - containerPort: 8080

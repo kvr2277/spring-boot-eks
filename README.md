@@ -86,8 +86,71 @@ Edit worker node security group to allow inbound traffic for port 31479 from sou
 eksctl-my-cluster-nodegroup-ng-1-workers-SG-JSDGZE4AAAA
 
 http://18.206.95.241:31479/name
-http://18.204.56.240:31479/name
+http://3.93.200.100:31479/name
 
+
+delete cluster again
+
+```
+eksctl delete cluster --region=us-east-1 --name=my-cluster
+```
+
+
+6. Exposing behind application load balancer (https://medium.com/cloudzone/aws-alb-ingress-controller-guide-ec16233f5903)
+
+```
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster my-cluster \
+    --approve
+```
+
+tag 3 subnets (pick 2 as internet facing, 1 as internal facing). You internet facing subnet will have rout table for 0.0.0.0/0 pointing to igw-XXXX (internet gateway). For this exercise, you can use any one of the internet facing subnet as ur inetrnal facing subnet - or u can remove a subnet's route table entry pointing to Internet Gateway
+
+```
+kubernetes.io/cluster/my-cluster Value shared 
+kubernetes.io/role/elb  Value 1 <--- internet facing 2 subnets
+kubernetes.io/role/internal-elb Value 1  <--- interal facing 1 is okay
+```
+
+```
+curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.8/docs/examples/iam-policy.json
+
+aws iam create-policy \
+    --policy-name ALBIngressControllerIAMPolicy \
+    --policy-document file://iam-policy.json
+
+```
+
+```
+curl -o rbac-role-alb-ingress-controller.yaml https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.8/docs/examples/rbac-role.yaml
+
+kubectl apply -f rbac-role-alb-ingress-controller.yaml
+```
+
+```
+aws iam create-role --role-name eks-alb-ingress-controller --assume-role-policy-document file://eks-ingress-trust-iam-policy.json
+
+aws iam attach-role-policy --role-name eks-alb-ingress-controller --policy-arn=arn:aws:iam::777258879182:policy/ALBIngressControllerIAMPolicy
+
+kubectl annotate serviceaccount -n kube-system alb-ingress-controller \
+eks.amazonaws.com/role-arn=arn:aws:iam::777258879182:role/eks-alb-ingress-controller
+
+kubectl apply -f  eks-alb-ingress-controller.yaml
+
+kubectl apply -f eks-ingress.yaml
+
+
+kubectl get ingress/demo-ingress -n default
+
+we can see app live at 
+http://81495355-default-demoingre-d07d-220047569.us-east-1.elb.amazonaws.com/
+http://81495355-default-demoingre-d07d-220047569.us-east-1.elb.amazonaws.com/name
+
+for any issues with ingress, check logs at
+
+kubectl logs -n kube-system deployment.apps/alb-ingress-controller
+```
 
 delete cluster again
 
