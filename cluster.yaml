@@ -2,15 +2,15 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: my-cluster
+  name: demo-cluster
   region: us-east-1
 
 vpc:
   subnets:
     private:
-      us-east-1b: { id: subnet-d026d49c }
-      us-east-1f: { id: subnet-fedb3fff }
-      us-east-1c: { id: subnet-b50c23ea }
+      us-east-1c: { id: subnet-5e38d672 }
+      us-east-1d: { id: subnet-0914cc41 }
+      us-east-1b: { id: subnet-b4065fd1 }
 
 nodeGroups:
   - name: ng-1-workers

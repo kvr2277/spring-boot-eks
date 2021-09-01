@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: back-end
-          image: 777258879182.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+          image: 777258879183.dkr.ecr.us-east-1.amazonaws.com/demo-repo:latest
           ports:
             - containerPort: 8080

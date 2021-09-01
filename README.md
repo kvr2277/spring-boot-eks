@@ -13,7 +13,7 @@ curl localhost:8080/name
 
 2. Create ECR repo
 aws ecr create-repository \
-    --repository-name sample-repo \
+    --repository-name demo-repo \
     --image-tag-mutability IMMUTABLE \
     --image-scanning-configuration scanOnPush=true
 
@@ -31,12 +31,12 @@ Build image in your local
 
 Tag it
 ```
-docker tag eksdemo:0.0.1-SNAPSHOT 777258879183.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+docker tag eksdemo:0.0.1-SNAPSHOT 777258879183.dkr.ecr.us-east-1.amazonaws.com/demo-repo:latest
 ```
 
 Push image
 ```
-docker push 777258879183.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+docker push 777258879183.dkr.ecr.us-east-1.amazonaws.com/demo-repo:latest
 ```
 
 4. Now working with EKS
@@ -66,7 +66,7 @@ kubectl get pods --all-namespaces -o wide
 
 c) Once basic cluster creation testing is done, delete the resources
 ```
-eksctl delete cluster --region=us-east-1 --name=my-cluster
+eksctl delete cluster --region=us-east-1 --name=demo-cluster
 ```
 
 
@@ -83,7 +83,7 @@ Get the external IPs
 18.206.95.241
 
 Edit worker node security group to allow inbound traffic for port 31479 from source anywhere - 0.0.0.0/0
-eksctl-my-cluster-nodegroup-ng-1-workers-SG-JSDGZE4AAAA
+eksctl-demo-cluster-nodegroup-ng-1-workers-SG-JSDGZE4AAAA
 
 http://18.206.95.241:31479/name
 http://3.93.200.100:31479/name
@@ -92,7 +92,7 @@ http://3.93.200.100:31479/name
 delete cluster again
 
 ```
-eksctl delete cluster --region=us-east-1 --name=my-cluster
+eksctl delete cluster --region=us-east-1 --name=demo-cluster
 ```
 
 
@@ -101,14 +101,14 @@ eksctl delete cluster --region=us-east-1 --name=my-cluster
 ```
 eksctl utils associate-iam-oidc-provider \
     --region us-east-1 \
-    --cluster my-cluster \
+    --cluster demo-cluster \
     --approve
 ```
 
 tag 3 subnets (pick 2 as internet facing, 1 as internal facing). You internet facing subnet will have rout table for 0.0.0.0/0 pointing to igw-XXXX (internet gateway). For this exercise, you can use any one of the internet facing subnet as ur inetrnal facing subnet - or u can remove a subnet's route table entry pointing to Internet Gateway
 
 ```
-kubernetes.io/cluster/my-cluster Value shared 
+kubernetes.io/cluster/demo-cluster Value shared 
 kubernetes.io/role/elb  Value 1 <--- internet facing 2 subnets
 kubernetes.io/role/internal-elb Value 1  <--- interal facing 1 is okay
 ```
@@ -131,10 +131,10 @@ kubectl apply -f rbac-role-alb-ingress-controller.yaml
 ```
 aws iam create-role --role-name eks-alb-ingress-controller --assume-role-policy-document file://eks-ingress-trust-iam-policy.json
 
-aws iam attach-role-policy --role-name eks-alb-ingress-controller --policy-arn=arn:aws:iam::777258879182:policy/ALBIngressControllerIAMPolicy
+aws iam attach-role-policy --role-name eks-alb-ingress-controller --policy-arn=arn:aws:iam::777258879183:policy/ALBIngressControllerIAMPolicy
 
 kubectl annotate serviceaccount -n kube-system alb-ingress-controller \
-eks.amazonaws.com/role-arn=arn:aws:iam::777258879182:role/eks-alb-ingress-controller
+eks.amazonaws.com/role-arn=arn:aws:iam::777258879183:role/eks-alb-ingress-controller
 
 kubectl apply -f  eks-alb-ingress-controller.yaml
 
@@ -155,5 +155,5 @@ kubectl logs -n kube-system deployment.apps/alb-ingress-controller
 delete cluster again
 
 ```
-eksctl delete cluster --region=us-east-1 --name=my-cluster
+eksctl delete cluster --region=us-east-1 --name=demo-cluster
 ```
