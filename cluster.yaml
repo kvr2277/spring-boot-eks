@@ -2,25 +2,25 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: demo-cluster
+  name: HelloWorldFargate
   region: us-east-1
 
 vpc:
   subnets:
     private:
-      us-east-1c: { id: subnet-5e38d672 }
-      us-east-1d: { id: subnet-0914cc41 }
-      us-east-1b: { id: subnet-b4065fd1 }
+      us-east-1c: { id: subnet-0e245fc337be31747 }
+      us-east-1d: { id: subnet-0251202883583b5d2 }
+      us-east-1b: { id: subnet-05cd1ec4881628464 }
 
 nodeGroups:
   - name: ng-1-workers
     labels: { role: workers }
-    instanceType: t3.small
+    instanceType: t2.micro
     desiredCapacity: 2
     privateNetworking: true
   - name: ng-2-builders
     labels: { role: builders }
-    instanceType: t3.small
+    instanceType: t2.micro
     desiredCapacity: 2
     privateNetworking: true
     iam:
