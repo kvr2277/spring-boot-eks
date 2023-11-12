@@ -3,6 +3,10 @@ Simple Spring Boot rest services on EKS
 
 # Steps
 
+0. Optional - See if you have JAVA_HOME setup
+
+# Refer article at https://medium.com/@vin0d/quick-way-to-set-java-home-in-mac-70cd4e82a9c5
+
 1. Check basic java build
 
 ```
